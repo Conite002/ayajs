@@ -279,12 +279,12 @@
 	}
 
 	/**
-	 * @class Link 
+	 * @class Link
 	 */
 
 	class Link
 	{
-	    constructor(source, destination, line = undefined) 
+	    constructor(source, destination, line = undefined)
 	    {
 	       this.uuid = _uuid.generate();
 	       this.source = source;
@@ -295,17 +295,103 @@
 	    }
 
 	    redraw(){
-	        this.smallWay();
+	        // this.smallWay();
+	        var source_point = this.source.form.optimalPath(this.line);
+	        var dest_point = this.destination.form.optimalPath(this.line);
 
-	        var delta_x, delta_y, c1 = {x : 0, y: 0}, c2 = {x : 0, y: 0};
+	        // console.log(source_point);
+	        // console.log(dest_point);
+
+	        this.line.x = (source_point == null) ? this.line.x : source_point.x;
+	        this.line.y = (source_point == null) ?  this.line.y : source_point.y;
+
+	        this.line.dest_x = dest_point == null ? this.line.dest_x : dest_point.x;
+	        this.line.dest_y = dest_point == null ? this.line.dest_y : dest_point.y;
+
+	        this.line.redraw();
+	    }
+
+	    smallWay(){
+	        function calculateDistance(a, b){
+	            return (a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y);
+	        }
+
+	        //get source point
+	        var srcPoint, destPoint;
+
+	        this.source.form.c_points.forEach(elt => {
+	            if( elt.x == this.line.x && elt.y == this.line.y){
+	                console.log(' source point  found ');
+	                console.log(elt);
+	                srcPoint = elt;
+	            }
+
+	        });
+
+	        //get destination point
+	        this.destination.form.c_points.forEach(elt => {
+	            if( elt.x == this.line.dest_x && elt.y == this.line.dest_y){
+	                console.log(' destination point found ');
+	                console.log(elt);
+	                destPoint = elt;
+	            }
+
+	        });
+
+	        //calculate Min distance
+
+	            //first value of minValue
+	        var minValue = calculateDistance(this.source.form.c_points[0], destPoint);
+
+	        this.source.form.c_points.forEach(ptSource => {
+
+	            this.destination.form.c_points.forEach(ptDest => {
+	                var newDistance = calculateDistance(ptSource, ptDest);
+	                if( minValue >= newDistance){
+	                    minValue = newDistance;
+
+	                    srcPoint = ptSource;
+	                    destPoint = ptDest;
+	                }
+	            });
+
+
+	        });
+
+
+
+	        this.line.x = srcPoint.x;
+	        this.line.y = srcPoint.y;
+
+	        this.line.dest_x = destPoint.x;
+	        this.line.dest_y = destPoint.y;
+
+
+	        //calculate distance between source and destination
+
+
+
+	    }
+
+
+	}
+
+
+
+	/***
+	 *
+	 *         // var pt = this.source.determine_the_right_point(this.line);
+
+
+	 *         var delta_x, delta_y, c1 = {x : 0, y: 0}, c2 = {x : 0, y: 0};
 
 	        delta_x = (this.line.x > this.line.dest_x) ? this.line.x - this.line.dest_x :  -(this.line.x - this.line.dest_x);
 	        delta_y = (this.line.y > this.line.dest_y) ? this.line.y - this.line.dest_y :  -(this.line.y - this.line.dest_y);
-	        
-	        console.log("delta_x,delta_y");
-	        console.log(delta_x,delta_y);
-	        console.log("this.line");
-	        console.log(this.line);
+
+	        console.log("delta_x,delta_y")
+	        console.log(delta_x,delta_y)
+	        console.log("this.line")
+	        console.log(this.line)
 
 	        // c1.x = (this.line.x > this.line.dest_x) ? this.line.x - delta_x/2 : this.line.x + delta_x/2;
 	        // c1.y = (this.line.y > this.line.dest_y) ? this.line.y  : this.line.dest_y;
@@ -320,80 +406,15 @@
 	        c2.x = (this.line.dest_x < this.line.x) ? this.line.dest_x + delta_x : this.line.dest_x - delta_x;
 	        c2.y = this.line.dest_y;
 
-	        console.log('c1');
-	        console.log(c1);
-	        console.log('c2');
-	        console.log(c2);
+	        console.log('c1')
+	        console.log(c1)
+	        console.log('c2')
+	        console.log(c2)
 
 	        this.line.c1 = c1;
 	        this.line.c2 = c2;
 
-	        this.line.redraw();
-	    }
-
-	    
-	    smallWay(){
-	        function calculateDistance(a, b){
-	            return (a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y);
-	        }
-
-	        //get source point
-	        var srcPoint, destPoint; 
-
-	        this.source.form.c_points.forEach(elt => {
-	            if( elt.x == this.line.x && elt.y == this.line.y){
-	                console.log(' source point  found ');
-	                console.log(elt);
-	                srcPoint = elt;
-	            }
-	                
-	        });
-
-	        //get destination point
-	        this.destination.form.c_points.forEach(elt => {
-	            if( elt.x == this.line.dest_x && elt.y == this.line.dest_y){
-	                console.log(' destination point found ');
-	                console.log(elt);
-	                destPoint = elt;
-	            }
-	                
-	        });
-
-	        //calculate Min distance
-
-	            //first value of minValue
-	        var minValue = calculateDistance(this.source.form.c_points[0], destPoint);
-	        
-	        this.source.form.c_points.forEach(ptSource => {
-
-	            this.destination.form.c_points.forEach(ptDest => {
-	                var newDistance = calculateDistance(ptSource, ptDest);
-	                if( minValue >= newDistance){
-	                    minValue = newDistance;
-	                    
-	                    srcPoint = ptSource;
-	                    destPoint = ptDest;
-	                }
-	            });
-	            
-
-	        });
-
-
-	 
-	        this.line.x = srcPoint.x;
-	        this.line.y = srcPoint.y;
-
-	        this.line.dest_x = destPoint.x;
-	        this.line.dest_y = destPoint.y;
-
-
-	        //calculate distance between source and destination
-
-
-
-	    }
-	}
+	 */
 
 	function nativeEvents() {
 	  var id;
@@ -415,6 +436,8 @@
 	      id = e.srcElement.id;
 
 	      cp = _Register.find(id);
+
+	      console.log(cp);
 
 	      if (id != "svg")
 	        source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
@@ -452,22 +475,22 @@
 	        dy = e.offsetY;
 
 	        if(cp.form != undefined){
-	          lk.map(({ source, line }) => {
-	            if (cp == source) {
+	          lk.map((link) => {
+	            if (cp == link.source) {
 	              cp.form.c_points.map((pnt) => {
-	                if (pnt.x == line.x && pnt.y == line.y) {
-	                  line.x += deltaX;
-	                  line.y += deltaY;
-	                  line.redraw();
+	                if (pnt.x == link.line.x && pnt.y == link.line.y) {
+	                  link.line.x += deltaX;
+	                  link.line.y += deltaY;
+	                  link.line.redraw();
 	                }
 	              });
 	            } 
 	            else {
 	              cp.form.c_points.map((pnt) => {
-	                if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
-	                  line.dest_x += deltaX;
-	                  line.dest_y += deltaY;
-	                  line.redraw();
+	                if (pnt.x == link.line.dest_x && pnt.y == link.line.dest_y) {
+	                  link.line.dest_x += deltaX;
+	                  link.line.dest_y += deltaY;
+	                  link.line.redraw();
 	                }
 	              });
 	            }
@@ -489,6 +512,9 @@
 	          
 	          cp.form.shift(deltaX, deltaY);
 	          cp.form.redraw();
+	          lk.map( (link) => {
+	            link.redraw();
+	          });
 	        }
 
 	        // il s'agit d'une form pas d'une instance de la classe Component ou de Point
@@ -584,7 +610,6 @@
 	          // for automatic redrawing
 	          // line.redraw();
 	          new Link(source, destination, line).redraw();
-
 	        } 
 	        else if (id == "svg" || pnt.ref == undefined) {
 	          var ref = document.getElementById(line.uuid);
@@ -903,39 +928,6 @@
 
 	}
 
-	class Connector {
-	  static create(type, uuid) {
-	    var cp = [];
-
-	    if (type == "rectangle") {
-	      cp = [];
-	      for (var i = 0; i < 4; i++) {
-	        cp.push(new Point(uuid, 0, 0));
-	      }
-	    } 
-	    else if (type == "triangle") {
-	      cp = [];
-	      for (var i = 0; i < 3; i++) {
-	        cp.push(new Point(uuid, 0, 0));
-	      }
-	    } 
-	    else if (type == "circle") {
-	      cp = [];
-	      for (var i = 0; i < 4; i++) {
-	        cp.push(new Point(uuid, 0, 0));
-	      }
-	    } 
-	    else if (type == "losange") {
-	      cp = [];
-	      for (var i = 0; i < 6; i++) {
-	        cp.push(new Point(uuid, 0, 0));
-	      }
-	    }
-	    else ;
-	    return cp;
-	  }
-	}
-
 	/**
 	 * Rectangle class
 	 */
@@ -973,11 +965,71 @@
 	    this.zoom = zoom;
 
 
-	    this.c_points = Connector.create("rectangle", this.uuid);
-	    this.vertex = Connector.create("rectangle", this.uuid);
+	    this.c_points = [
+	      new Point(this.uuid, 0, 0),
+	      new Point(this.uuid, 0, 0),
+	      new Point(this.uuid, 0, 0),
+	      new Point(this.uuid, 0, 0),
+	    ];
+	    this.vertex = [
+	      new Point(this.uuid, 0, 0),
+	      new Point(this.uuid, 0, 0),
+	      new Point(this.uuid, 0, 0),
+	      new Point(this.uuid, 0, 0),
+	    ];
 
 	    this.createChildren(children);
 	  }
+
+
+	  optimalPath(line){
+	    // console.log("line");
+	    // console.log(line);
+	    var _x, _y;
+	    var a = (line.dest_y - line.y)/(line.dest_x - line.x);
+	    var b = line.y - a * line.x;
+	    // console.log(a + " " + b);
+	    
+
+	    for (var i = 0; i <= 3; i++){
+	        if(i % 2 == 0){
+	            _y = this.vertex[i].y;
+	            _x = (_y - b)/a;
+	        }
+	        else {
+	            _x = this.vertex[i].x;
+	            _y = a * _x + b;
+	        }
+	        // console.log("x et _x");
+	        // console.log(_x+ " " + _y);
+	        // console.log(line.x+ " " + line.y);
+
+	        if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y)){
+	          // console.log("sur le point de connexion et i =" + i);
+	          continue;
+	        }
+	        // console.log("vertex");
+	        // console.log(this.vertex[i].x + " " + this.vertex[i].y);
+	        // console.log(this.vertex[(i+3) < 3 ? i+3: 0 ].x + " " + this.vertex[(i+3) < 3 ? i+3: 0].y);
+
+	        if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
+	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
+	           ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
+	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) || 
+	           ((i == 2 &&  _x > this.vertex[i+1].x && _x < this.vertex[i].x) &&
+	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  )|| 
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ))) ||
+	           ((i == 3 &&  _y >= this.vertex[0].y && _y <= this.vertex[i].y) &&
+	              (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
+	              ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) ) )) {
+	            return this.c_points[i];
+	           }
+	      }
+	    return null;
+	  }
+
 
 	  draw(svgs) {
 	    const svgns = "http://www.w3.org/2000/svg";
@@ -1749,6 +1801,39 @@
 	        _Register.add(this);
 	        this.form.draw(svg);
 	    }
+	}
+
+	class Connector {
+	  static create(type, uuid) {
+	    var cp = [];
+
+	    if (type == "rectangle") {
+	      cp = [];
+	      for (var i = 0; i < 4; i++) {
+	        cp.push(new Point(uuid, 0, 0));
+	      }
+	    } 
+	    else if (type == "triangle") {
+	      cp = [];
+	      for (var i = 0; i < 3; i++) {
+	        cp.push(new Point(uuid, 0, 0));
+	      }
+	    } 
+	    else if (type == "circle") {
+	      cp = [];
+	      for (var i = 0; i < 4; i++) {
+	        cp.push(new Point(uuid, 0, 0));
+	      }
+	    } 
+	    else if (type == "losange") {
+	      cp = [];
+	      for (var i = 0; i < 6; i++) {
+	        cp.push(new Point(uuid, 0, 0));
+	      }
+	    }
+	    else ;
+	    return cp;
+	  }
 	}
 
 	exports.Circle = Circle;

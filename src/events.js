@@ -25,6 +25,8 @@ function nativeEvents() {
 
       cp = _Register.find(id);
 
+      console.log(cp);
+
       if (id != "svg")
         source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
 
@@ -61,22 +63,22 @@ function nativeEvents() {
         dy = e.offsetY;
 
         if(cp.form != undefined){
-          lk.map(({ source, line }) => {
-            if (cp == source) {
+          lk.map((link) => {
+            if (cp == link.source) {
               cp.form.c_points.map((pnt) => {
-                if (pnt.x == line.x && pnt.y == line.y) {
-                  line.x += deltaX;
-                  line.y += deltaY;
-                  line.redraw();
+                if (pnt.x == link.line.x && pnt.y == link.line.y) {
+                  link.line.x += deltaX;
+                  link.line.y += deltaY;
+                  link.line.redraw();
                 }
               });
             } 
             else {
               cp.form.c_points.map((pnt) => {
-                if (pnt.x == line.dest_x && pnt.y == line.dest_y) {
-                  line.dest_x += deltaX;
-                  line.dest_y += deltaY;
-                  line.redraw();
+                if (pnt.x == link.line.dest_x && pnt.y == link.line.dest_y) {
+                  link.line.dest_x += deltaX;
+                  link.line.dest_y += deltaY;
+                  link.line.redraw();
                 }
               });
             }
@@ -98,6 +100,9 @@ function nativeEvents() {
           
           cp.form.shift(deltaX, deltaY);
           cp.form.redraw();
+          lk.map( (link) => {
+            link.redraw();
+          })
         }
 
         // il s'agit d'une form pas d'une instance de la classe Component ou de Point
@@ -193,7 +198,6 @@ function nativeEvents() {
           // for automatic redrawing
           // line.redraw();
           new Link(source, destination, line).redraw();
-
         } 
         else if (id == "svg" || pnt.ref == undefined) {
           var ref = document.getElementById(line.uuid);
