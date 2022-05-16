@@ -66,7 +66,6 @@ class Losange {
           new Point(this.uuid, 0, 0),
           new Point(this.uuid, 0, 0),
         ];
-
         this.createChildren(children);
     }
 
@@ -124,6 +123,7 @@ class Losange {
     this.vertex[3].x = this.x4;
     this.vertex[3].y = this.y3;
   }
+
 
   drawConnector() {
     this.c_points[0].x = this.x1;
@@ -252,5 +252,4 @@ class Losange {
   }
 
 }
-
 export { Losange };

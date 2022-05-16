@@ -25,8 +25,6 @@ function nativeEvents() {
 
       cp = _Register.find(id);
 
-      console.log(cp);
-      
       if (id != "svg")
         source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
 
@@ -141,7 +139,6 @@ function nativeEvents() {
         line.redraw();
       } 
       else if (state == "resizing") {
-
         if (source) {
           deltaX = e.offsetX - dx;
           deltaY = e.offsetY - dy;

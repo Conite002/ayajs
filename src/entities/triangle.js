@@ -9,7 +9,17 @@ import { Point } from "./point.js";
  */
 
 class Triangle {
-
+  /**
+   *
+   * @param {string} uuid
+   * @param {abscissa starting point} x1
+   * @param {ordonne starting point} y1
+   * @param {LineTo this abscissa point} x2
+   * @param {LineTo this ordonne point} y2
+   * @param {LineTo this abscissa point} x3
+   * @param {LineTo this ordonne point} y3
+   * @param {array of object} events
+   */
   constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, children = [], ratio = {}, zoom = false )
   {
 
@@ -54,14 +64,6 @@ class Triangle {
         new Point(this.uuid,0, 0 ),
         new Point(this.uuid,0, 0 ),
     ];
-
-    // console.log(this.base() + " " + this.perimeter() + " " + this.area() + " " + this .hauteur());
-
-    // console.log(this.p1.x + " " + this.p1.y + " " + this.p2.x + " " + this.p2.y + " " + this.p3.x + " " + this.p3.y  );
-    // console.log(this.x1 + " " + this.y1 + " " + this.x2 + " " + this.y2 + " " + this.x3 + " " + this.y3 );
-
-    // console.log(this.vertex);
-    // console.log(this.c_points);
 
     this.createChildren(children);
   }
@@ -159,7 +161,6 @@ class Triangle {
 
     var p = "M " + this.x1 + "," + this.y1 + " " + "L " + this.x2 + "," + this.y2 + " " + "L " + this.x3 + "," + this.y3 + " Z";
 
-
     this.c_svg.setAttribute("id", this.uuid);
     this.c_svg.setAttribute("d", p);
     this.c_svg.setAttributeNS(null, "stroke", "darkviolet");
@@ -167,8 +168,12 @@ class Triangle {
     this.c_svg.setAttribute("fill", "lavenderblush");
 
 
-    // this.drawVertex();
     // this.drawConnector();
+    // this.drawVertex();
+
+    // this.c_points.map((point) => {
+    //   point.draw(svgs);
+    // });
 
     /* dessin le contour */
     // this.drawBox();
@@ -191,14 +196,14 @@ class Triangle {
     // });
 
     
+    // this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
+    // this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
+    // this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
+    // this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
 
-    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
-    this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
-    this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
-
-    this.events.create();
+    // this.events.create();
   }
+
 
   shift(dx, dy) {
     this.x1 += dx;
@@ -241,34 +246,29 @@ class Triangle {
   resize(pos, dx, dy, param = {}) {
 
     if(Object.keys(this.ratio).length > 0){
-
         (this.zoom == false) ? 
           this.shift(dx,dy):
         undefined ;
-    }
+      }
     else{
       if (pos == 0) {
         this.x1 = dx;
         this.y1 = dy;
         this.vertex[0].x = dx;
         this.vertex[0].y = dy;
-        // this.drawConnector();
       } 
       else if (pos == 1) {
         this.x2 = dx;
         this.y2 = dy;
         this.vertex[1].x = dx;
         this.vertex[1].y = dy;
-        // this.drawConnector();
       }
       else if (pos == 2) {
         this.x3 = dx;
         this.y3 = dy;
         this.vertex[2].x = dx;
         this.vertex[2].y = dy;
-        // this.drawConnector();
       }
- 
     }
   }
 

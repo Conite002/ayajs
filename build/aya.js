@@ -261,7 +261,19 @@
 
 	    createChildren(children){
 	        children.map((chd) => {
-	            if(chd.type == "triangle");
+	            if(chd.type == "triangle"){
+	                var _x1 = this.x + (chd.ratio.p1.x * this.width);
+	                var _y1 = this.y + (chd.ratio.p1.y * this.height); 
+	              
+	                var _x2 = this.x + (chd.ratio.p2.x * this.width);
+	                var _y2 = this.y + (chd.ratio.p2.y * this.height); 
+	        
+	                var _x3 = this.x + (chd.ratio.p3.x * this.width);
+	                var _y3 = this.y + (chd.ratio.p3.y * this.height); 
+	        
+	                var child = FactoryForm.createForm(_uuid.generate(), chd.type, {x1: _x1, y1: _y1, x2: _x2, y2: _y2, x3: _x3, y3: _y3}, [], chd.ratio, chd.zoom);
+	                this.children.push(child);
+	            }
 	        });
 	    }
 	}
@@ -283,9 +295,104 @@
 	    }
 
 	    redraw(){
+	        this.smallWay();
+
+	        var delta_x, delta_y, c1 = {x : 0, y: 0}, c2 = {x : 0, y: 0};
+
+	        delta_x = (this.line.x > this.line.dest_x) ? this.line.x - this.line.dest_x :  -(this.line.x - this.line.dest_x);
+	        delta_y = (this.line.y > this.line.dest_y) ? this.line.y - this.line.dest_y :  -(this.line.y - this.line.dest_y);
+	        
+	        console.log("delta_x,delta_y");
+	        console.log(delta_x,delta_y);
+	        console.log("this.line");
+	        console.log(this.line);
+
+	        // c1.x = (this.line.x > this.line.dest_x) ? this.line.x - delta_x/2 : this.line.x + delta_x/2;
+	        // c1.y = (this.line.y > this.line.dest_y) ? this.line.y  : this.line.dest_y;
+
+	        // c2.x = c1.x;
+	        // c2.y = -delta_y + c1.y;
+
+	        delta_x /= 2;
+	        c1.x = (this.line.x < this.line.dest_x) ? this.line.x + delta_x : this.line.x - delta_x;
+	        c1.y = this.line.y;
+
+	        c2.x = (this.line.dest_x < this.line.x) ? this.line.dest_x + delta_x : this.line.dest_x - delta_x;
+	        c2.y = this.line.dest_y;
+
+	        console.log('c1');
+	        console.log(c1);
+	        console.log('c2');
+	        console.log(c2);
+
+	        this.line.c1 = c1;
+	        this.line.c2 = c2;
+
 	        this.line.redraw();
 	    }
 
+	    
+	    smallWay(){
+	        function calculateDistance(a, b){
+	            return (a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y);
+	        }
+
+	        //get source point
+	        var srcPoint, destPoint; 
+
+	        this.source.form.c_points.forEach(elt => {
+	            if( elt.x == this.line.x && elt.y == this.line.y){
+	                console.log(' source point  found ');
+	                console.log(elt);
+	                srcPoint = elt;
+	            }
+	                
+	        });
+
+	        //get destination point
+	        this.destination.form.c_points.forEach(elt => {
+	            if( elt.x == this.line.dest_x && elt.y == this.line.dest_y){
+	                console.log(' destination point found ');
+	                console.log(elt);
+	                destPoint = elt;
+	            }
+	                
+	        });
+
+	        //calculate Min distance
+
+	            //first value of minValue
+	        var minValue = calculateDistance(this.source.form.c_points[0], destPoint);
+	        
+	        this.source.form.c_points.forEach(ptSource => {
+
+	            this.destination.form.c_points.forEach(ptDest => {
+	                var newDistance = calculateDistance(ptSource, ptDest);
+	                if( minValue >= newDistance){
+	                    minValue = newDistance;
+	                    
+	                    srcPoint = ptSource;
+	                    destPoint = ptDest;
+	                }
+	            });
+	            
+
+	        });
+
+
+	 
+	        this.line.x = srcPoint.x;
+	        this.line.y = srcPoint.y;
+
+	        this.line.dest_x = destPoint.x;
+	        this.line.dest_y = destPoint.y;
+
+
+	        //calculate distance between source and destination
+
+
+
+	    }
 	}
 
 	function nativeEvents() {
@@ -309,8 +416,6 @@
 
 	      cp = _Register.find(id);
 
-	      console.log(cp);
-	      
 	      if (id != "svg")
 	        source = cp != undefined && cp.ref != undefined ? _Register.find(cp.ref) : cp;
 
@@ -425,7 +530,6 @@
 	        line.redraw();
 	      } 
 	      else if (state == "resizing") {
-
 	        if (source) {
 	          deltaX = e.offsetX - dx;
 	          deltaY = e.offsetY - dy;
@@ -1043,7 +1147,7 @@
 	        var abs = this.x +  (chd.ratio.x * this.width);
 	        var ord = this.y + (chd.ratio.y * this.height);
 	        var rayon = (chd.ratio.r * this.width);
-	        var child = FactoryForm.createForm(_uuid.generate(), chd.type, {x: abs, y: ord, r: rayon},[], chd.ratio, chd.zoom);
+	        var child = FactoryForm$1.createForm(_uuid.generate(), chd.type, {x: abs, y: ord, r: rayon},[], chd.ratio, chd.zoom);
 	        this.children.push(child);
 	      }
 	      else if(chd.type == "rectangle"){
@@ -1051,7 +1155,7 @@
 	        var _y = this.y + (chd.ratio.y * this.height);
 	        var _width = chd.ratio.width * this.width;
 	        var _height = chd.ratio.height * this.height ;
-	        var child = FactoryForm.createForm(_uuid.generate(), chd.type, {x: _x, y: _y, width: _width, height: _height}, [], chd.ratio, chd.zoom);
+	        var child = FactoryForm$1.createForm(_uuid.generate(), chd.type, {x: _x, y: _y, width: _width, height: _height}, [], chd.ratio, chd.zoom);
 	        this.children.push(child);
 	      }
 	      else if(chd.type == "triangle"){
@@ -1064,7 +1168,7 @@
 	        var _x3 = this.x + (chd.ratio.p3.x * this.width);
 	        var _y3 = this.y + (chd.ratio.p3.y * this.height); 
 
-	        var child = FactoryForm.createForm(_uuid.generate(), chd.type, {x1: _x1, y1: _y1, x2: _x2, y2: _y2, x3: _x3, y3: _y3}, [], chd.ratio, chd.zoom);
+	        var child = FactoryForm$1.createForm(_uuid.generate(), chd.type, {x1: _x1, y1: _y1, x2: _x2, y2: _y2, x3: _x3, y3: _y3}, [], chd.ratio, chd.zoom);
 	        this.children.push(child);
 	      }
 	      else if(chd.type == "losange");
@@ -1077,7 +1181,17 @@
 	 */
 
 	class Triangle {
-
+	  /**
+	   *
+	   * @param {string} uuid
+	   * @param {abscissa starting point} x1
+	   * @param {ordonne starting point} y1
+	   * @param {LineTo this abscissa point} x2
+	   * @param {LineTo this ordonne point} y2
+	   * @param {LineTo this abscissa point} x3
+	   * @param {LineTo this ordonne point} y3
+	   * @param {array of object} events
+	   */
 	  constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, children = [], ratio = {}, zoom = false )
 	  {
 
@@ -1122,14 +1236,6 @@
 	        new Point(this.uuid,0, 0 ),
 	        new Point(this.uuid,0, 0 ),
 	    ];
-
-	    // console.log(this.base() + " " + this.perimeter() + " " + this.area() + " " + this .hauteur());
-
-	    // console.log(this.p1.x + " " + this.p1.y + " " + this.p2.x + " " + this.p2.y + " " + this.p3.x + " " + this.p3.y  );
-	    // console.log(this.x1 + " " + this.y1 + " " + this.x2 + " " + this.y2 + " " + this.x3 + " " + this.y3 );
-
-	    // console.log(this.vertex);
-	    // console.log(this.c_points);
 
 	    this.createChildren(children);
 	  }
@@ -1227,7 +1333,6 @@
 
 	    var p = "M " + this.x1 + "," + this.y1 + " " + "L " + this.x2 + "," + this.y2 + " " + "L " + this.x3 + "," + this.y3 + " Z";
 
-
 	    this.c_svg.setAttribute("id", this.uuid);
 	    this.c_svg.setAttribute("d", p);
 	    this.c_svg.setAttributeNS(null, "stroke", "darkviolet");
@@ -1235,8 +1340,12 @@
 	    this.c_svg.setAttribute("fill", "lavenderblush");
 
 
-	    // this.drawVertex();
 	    // this.drawConnector();
+	    // this.drawVertex();
+
+	    // this.c_points.map((point) => {
+	    //   point.draw(svgs);
+	    // });
 
 	    /* dessin le contour */
 	    // this.drawBox();
@@ -1259,14 +1368,14 @@
 	    // });
 
 	    
+	    // this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
+	    // this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
+	    // this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
+	    // this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
 
-	    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-	    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
-	    this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
-	    this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
-
-	    this.events.create();
+	    // this.events.create();
 	  }
+
 
 	  shift(dx, dy) {
 	    this.x1 += dx;
@@ -1309,34 +1418,29 @@
 	  resize(pos, dx, dy, param = {}) {
 
 	    if(Object.keys(this.ratio).length > 0){
-
 	        (this.zoom == false) ? 
 	          this.shift(dx,dy):
 	        undefined ;
-	    }
+	      }
 	    else {
 	      if (pos == 0) {
 	        this.x1 = dx;
 	        this.y1 = dy;
 	        this.vertex[0].x = dx;
 	        this.vertex[0].y = dy;
-	        // this.drawConnector();
 	      } 
 	      else if (pos == 1) {
 	        this.x2 = dx;
 	        this.y2 = dy;
 	        this.vertex[1].x = dx;
 	        this.vertex[1].y = dy;
-	        // this.drawConnector();
 	      }
 	      else if (pos == 2) {
 	        this.x3 = dx;
 	        this.y3 = dy;
 	        this.vertex[2].x = dx;
 	        this.vertex[2].y = dy;
-	        // this.drawConnector();
 	      }
-	 
 	    }
 	  }
 
@@ -1411,7 +1515,6 @@
 	          new Point(this.uuid, 0, 0),
 	          new Point(this.uuid, 0, 0),
 	        ];
-
 	        this.createChildren(children);
 	    }
 
@@ -1469,6 +1572,7 @@
 	    this.vertex[3].x = this.x4;
 	    this.vertex[3].y = this.y3;
 	  }
+
 
 	  drawConnector() {
 	    this.c_points[0].x = this.x1;
@@ -1601,7 +1705,7 @@
 	 */
 
 
-	class FactoryForm
+	class FactoryForm$1
 	{
 	    /**
 	     * 
@@ -1641,7 +1745,7 @@
 	    {
 	        this.uuid = _uuid.generate();
 	        this.type = type;
-	        this.form = FactoryForm.createForm(this.uuid, type, props, children);
+	        this.form = FactoryForm$1.createForm(this.uuid, type, props, children);
 	        _Register.add(this);
 	        this.form.draw(svg);
 	    }
@@ -1650,7 +1754,7 @@
 	exports.Circle = Circle;
 	exports.Component = Component;
 	exports.Connector = Connector;
-	exports.FactoryForm = FactoryForm;
+	exports.FactoryForm = FactoryForm$1;
 	exports.Line = Line;
 	exports.Losange = Losange;
 	exports.Point = Point;
