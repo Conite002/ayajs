@@ -60,13 +60,9 @@ class Rectangle {
 
 
   optimalPath(line){
-    // console.log("line");
-    // console.log(line);
     var _x, _y;
     var a = (line.dest_y - line.y)/(line.dest_x - line.x);
     var b = line.y - a * line.x;
-    // console.log(a + " " + b);
-    
 
     for (var i = 0; i <= 3; i++){
         if(i % 2 == 0){
@@ -77,19 +73,11 @@ class Rectangle {
             _x = this.vertex[i].x;
             _y = a * _x + b;
         }
-        // console.log("x et _x");
-        // console.log(_x+ " " + _y);
-        // console.log(line.x+ " " + line.y);
 
-        if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y)){
-          // console.log("sur le point de connexion et i =" + i);
+        if( (_x == line.x && _y == line.y) || (_x == line.dest_x && _y == line.dest_y))
           continue;
-        }
-        // console.log("vertex");
-        // console.log(this.vertex[i].x + " " + this.vertex[i].y);
-        // console.log(this.vertex[(i+3) < 3 ? i+3: 0 ].x + " " + this.vertex[(i+3) < 3 ? i+3: 0].y);
 
-        if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
+          if(((i == 0 &&  _x > this.vertex[i].x && _x < this.vertex[i+1].x) &&
               (( line.x <= line.dest_x  && _x <= line.dest_x && _x >= line.x &&  a < 0 ? _y >= line.dest_y && _y <= line.y :_y <= line.dest_y && _y >= line.y  ) || 
               ( line.x >= line.dest_x  && _x >= line.dest_x &&  _x <= line.x  &&  a < 0 ? _y <= line.dest_y &&  _y >= line.y : _y >= line.dest_y &&  _y <= line.y ) )) ||
            ((i == 1 &&  _y > this.vertex[i].y && _y < this.vertex[i+1].y) &&
@@ -111,7 +99,8 @@ class Rectangle {
   draw(svgs) {
     const svgns = "http://www.w3.org/2000/svg";
     this.c_svg = document.createElementNS(svgns, "rect");
-
+ 
+  
     this.c_svg.setAttributeNS(null, "x", this.x);
     this.c_svg.setAttributeNS(null, "y", this.y);
     this.c_svg.setAttributeNS(null, "id", this.uuid);
@@ -121,9 +110,8 @@ class Rectangle {
     this.c_svg.setAttributeNS(null, "stroke-width", "3px");
     this.c_svg.setAttributeNS(null, "fill", "cornsilk");
 
-
+  
     svgs.appendChild(this.c_svg);
-
 
     this.drawConnector();
     this.drawVertex();
@@ -194,25 +182,27 @@ class Rectangle {
 
 
   redraw() {
+
     this.c_svg.setAttribute("x", this.x);
     this.c_svg.setAttribute("y", this.y);
     this.c_svg.setAttributeNS(null, "height", this.height);
     this.c_svg.setAttributeNS(null, "width", this.width);
 
-    this.drawVertex();
-    this.drawConnector();
+   this.drawVertex();
+   this.drawConnector();
 
-    this.c_points.map((p) => {
-      p.redraw();
-    });
+   this.c_points.map((p) => {
+     p.redraw();
+   });
 
-    this.vertex.map((p) => {
-      p.redraw();
-    });
+   this.vertex.map((p) => {
+     p.redraw();
+   });
 
-    this.children.map ( (child) => {
-        child.redraw()
-    })
+   this.children.map ( (child) => {
+       child.redraw()
+   });
+
   }
 
   resize(pos, dx, dy, param = {} ) {
@@ -254,7 +244,7 @@ class Rectangle {
         this.children.map ( (child) => {
           child.resize(pos, dx, dy, { x: this.x, y: this.y, width: this.width, height: this.height});
         });
-      } 
+      }
       else if (pos == 3) {
   
         this.x += dx;

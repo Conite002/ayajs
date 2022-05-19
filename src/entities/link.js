@@ -10,6 +10,7 @@ class Link
     constructor(source, destination, line = undefined)
     {
        this.uuid = _uuid.generate();
+       /* référence sur les points de connexions*/
        this.source = source;
        this.destination = destination;
        this.line = line;
@@ -18,84 +19,71 @@ class Link
     }
 
     redraw(){
-        // this.smallWay();
-        var source_point = this.source.form.optimalPath(this.line);
-        var dest_point = this.destination.form.optimalPath(this.line);
+        var source = _Register.find(this.source.ref), destination = _Register.find(this.destination.ref);
 
-        // console.log(source_point);
-        // console.log(dest_point);
+        var source_point = source.form.optimalPath(this.line);
+        var dest_point = destination.form.optimalPath(this.line);
 
-        this.line.x = (source_point == null) ? this.line.x : source_point.x;
-        this.line.y = (source_point == null) ?  this.line.y : source_point.y;
 
-        this.line.dest_x = dest_point == null ? this.line.dest_x : dest_point.x;
-        this.line.dest_y = dest_point == null ? this.line.dest_y : dest_point.y;
+        if(source_point)
+            this.source = source_point;
+        if(dest_point)
+            this.destination = dest_point;
 
+        this.line.x = this.source.x;
+        this.line.y = this.source.y;
+
+        this.line.dest_x = this.destination.x;
+        this.line.dest_y = this.destination.y;
+
+        // console.log("c1");
+        // console.log(this.line.c1);
+
+
+        // console.log("c2");
+        // console.log(this.line.c2);
+
+        // if(this.source.x != this.line.c1.x && this.destination.y == this.line.c2.y){
+        //     console.log("test 1");
+        //     // this.line.c0.x = this.source.x;
+        //     // this.line.c0.y = (this.destination.y - this.source.y) / 2;
+        //     // this.line.c3.x = this.destination.x;
+        //     // this.line.c3.y = this.line.c1.y;
+            
+        //     this.line.redraw();
+        // }
+        // if(this.source.y == this.line.c1.y && this.destination.y != this.line.c2.y){
+        //     console.log("test 2");
+        //     this.line.c1.x = this.source.x;
+        //     this.line.c1.y = this.line.c2.y;
+        //     this.line.redraw();
+        // }
+        // if(this.source.y != this.line.c1.y && this.destination.y == this.line.c2.y){
+        //     console.log("test 3");
+        //     this.line.c2.x = this.destination.x;
+        //     this.line.c2.y = this.line.c1.y;
+        //     this.line.redraw();
+        // }
+
+         // var delta_x, delta_y, c1 = {x : 0, y: 0}, c2 = {x : 0, y: 0};
+
+        // delta_x = (this.x > this.dest_x) ? this.x - this.dest_x :  -(this.x - this.dest_x);
+        // delta_y = (this.y > this.dest_y) ? this.y - this.dest_y :  -(this.y - this.dest_y);
+        
+
+        // delta_x /= 2;
+        // c1.x = (this.x < this.dest_x) ? this.x + delta_x : this.x - delta_x;
+        // c1.y = this.y;
+
+        // c2.x = (this.dest_x < this.x) ? this.dest_x + delta_x : this.dest_x - delta_x;
+        // c2.y = this.dest_y;
+
+        // this.c1 = c1;
+        // this.c2 = c2;
+        
         this.line.redraw();
-    }
-
-    smallWay(){
-        function calculateDistance(a, b){
-            return (a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y);
-        }
-
-        //get source point
-        var srcPoint, destPoint;
-
-        this.source.form.c_points.forEach(elt => {
-            if( elt.x == this.line.x && elt.y == this.line.y){
-                console.log(' source point  found ');
-                console.log(elt);
-                srcPoint = elt;
-            }
-
-        });
-
-        //get destination point
-        this.destination.form.c_points.forEach(elt => {
-            if( elt.x == this.line.dest_x && elt.y == this.line.dest_y){
-                console.log(' destination point found ');
-                console.log(elt);
-                destPoint = elt;
-            }
-
-        });
-
-        //calculate Min distance
-
-            //first value of minValue
-        var minValue = calculateDistance(this.source.form.c_points[0], destPoint);
-
-        this.source.form.c_points.forEach(ptSource => {
-
-            this.destination.form.c_points.forEach(ptDest => {
-                var newDistance = calculateDistance(ptSource, ptDest)
-                if( minValue >= newDistance){
-                    minValue = newDistance;
-
-                    srcPoint = ptSource;
-                    destPoint = ptDest;
-                }
-            });
-
-
-        });
-
-
-
-        this.line.x = srcPoint.x;
-        this.line.y = srcPoint.y;
-
-        this.line.dest_x = destPoint.x;
-        this.line.dest_y = destPoint.y;
-
-
-        //calculate distance between source and destination
-
-
 
     }
-
 
 }
 export {Link};

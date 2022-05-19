@@ -23,7 +23,8 @@ class Triangle {
   constructor( uuid, x1 = 0, y1 = 0, x2 = 5, y2 = 5, x3 = 10, y3 = 10, children = [], ratio = {}, zoom = false )
   {
 
-    this.uuid = uuid;
+    this.parent = uuid;
+    this.uuid = _uuid.generate();
 
     this.x1 = x1;
     this.y1 = y1;
@@ -52,9 +53,9 @@ class Triangle {
 
     this.c_points = [
       new Point(this.uuid,0, 0 ),
-      new Point(this.uuid,0, 0 ),
-      new Point(this.uuid,0, 0 ),
-      new Point(this.uuid,0, 0 ),
+      // new Point(this.uuid,0, 0 ),
+      // new Point(this.uuid,0, 0 ),
+      // new Point(this.uuid,0, 0 ),
     ];
 
     this.vertex = [
@@ -66,6 +67,7 @@ class Triangle {
     ];
 
     this.createChildren(children);
+    _Register.add(this);
   }
 
   base(){
@@ -101,55 +103,35 @@ class Triangle {
 
 
 
-  drawVertex(){
-    /* initialiser les coordonnées de chaque sommet*/
+  // drawVertex(){
+  //   /* initialiser les coordonnées de chaque sommet*/
 
-    this.vertex[0].x = this.p1.x;
-    this.vertex[0].y = (this.p1.y > this.p3.y) ? this.p1.y - (this.p1.y - this.p3.y): this.p1.y;
+  //   this.vertex[0].x = this.p1.x;
+  //   this.vertex[0].y = (this.p1.y > this.p3.y) ? this.p1.y - (this.p1.y - this.p3.y): this.p1.y;
 
-    this.vertex[1].x = this.p2.x;
-    this.vertex[1].y = (this.p2.y > this.p3.y) ? this.p2.y - (this.p2.y - this.p3.y) : this.p2.y;
-
-    this.vertex[2].x = this.p2.x + this.p1.x;
-    this.vertex[2].y = (this.p2.y < this.p3.y) ? this.p2.y + (this.p3.y - this.p2.y) : this.p2.y;
-
-    this.vertex[3].x =  this.p2.x + this.p1.x - this.base();
-    this.vertex[3].y = (this.p1.y < this.p3.y) ? this.p1.y + (this.p3.y - this.p1.y): this.p1.y;
-
-    this.vertex[4].x = this.p3.x;
-    this.vertex[4].y = this.p3.y;
-  }
+  // }
 
  drawConnector() {
      /* initialiser les coordonnées de chaque point de connexion*/
 
-     this.c_points[0].x = (this.p1.x + this.p2.x) / 2;
-     this.c_points[0].y = (this.p1.y + this.p2.y) / 2;
-
-     this.c_points[1].x = this.vertex[1].x;
-     this.c_points[1].y = (this.vertex[1].y + this.vertex[2].y) / 2;
-
-     this.c_points[2].x = (this.vertex[2].x + this.vertex[3].x) / 2;
-     this.c_points[2].y = this.vertex[2].y;
-
-     this.c_points[3].x = this.vertex[0].x;
-     this.c_points[3].y = (this.vertex[0].y + this.vertex[3].y) / 2;
+     this.c_points[0].x = (this.x1 + this.x3) / 2;
+     this.c_points[0].y = (this.y1 + this.y3) / 2;
 }
 
- drawBox(){
-     /* dessiner le contour de la forme sous forme de carré*/
+//  drawBox(){
+//      /* dessiner le contour de la forme sous forme de carré*/
 
-     var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
-               L ${this.c_points[0].x} ${this.c_points[0].y} 
-               L ${this.vertex[1].x}   ${this.vertex[1].y} 
-               L ${this.c_points[1].x} ${this.c_points[1].y}
-               L ${this.vertex[2].x}   ${this.vertex[2].y}
-               L ${this.c_points[2].x} ${this.c_points[2].y} 
-               L ${this.vertex[3].x}   ${this.vertex[3].y}
-               L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
+//      var p = `M ${this.vertex[0].x} ${this.vertex[0].y}
+//                L ${this.c_points[0].x} ${this.c_points[0].y} 
+//                L ${this.vertex[1].x}   ${this.vertex[1].y} 
+//                L ${this.c_points[1].x} ${this.c_points[1].y}
+//                L ${this.vertex[2].x}   ${this.vertex[2].y}
+//                L ${this.c_points[2].x} ${this.c_points[2].y} 
+//                L ${this.vertex[3].x}   ${this.vertex[3].y}
+//                L ${this.c_points[3].x} ${this.c_points[3].y} Z`;
  
-     this.box.setAttribute("d", p);
-}
+//      this.box.setAttribute("d", p);
+// }
 
 
   draw(svgs) {
@@ -168,12 +150,12 @@ class Triangle {
     this.c_svg.setAttribute("fill", "lavenderblush");
 
 
-    // this.drawConnector();
+    this.drawConnector();
     // this.drawVertex();
 
-    // this.c_points.map((point) => {
-    //   point.draw(svgs);
-    // });
+    this.c_points.map((point) => {
+      point.draw(svgs);
+    });
 
     /* dessin le contour */
     // this.drawBox();
@@ -196,12 +178,12 @@ class Triangle {
     // });
 
     
-    // this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-    // this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
-    // this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
-    // this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
+    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
+    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
+    this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
+    this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
 
-    // this.events.create();
+    this.events.create();
   }
 
 
@@ -230,7 +212,7 @@ class Triangle {
     this.c_svg.setAttribute("d", p);
 
     // this.drawVertex();
-    // this.drawConnector();
+    this.drawConnector();
     // this.drawBox();
 
 
@@ -238,18 +220,23 @@ class Triangle {
     //   v.redraw();
     // });
 
-    // this.c_points.map((p) => {
-    //   p.redraw();
-    // });
+    this.c_points.map((p) => {
+      p.redraw();
+    });
+
+    this.children.map ( (child) => {
+      child.redraw()
+  });
   }
   
   resize(pos, dx, dy, param = {}) {
 
-    if(Object.keys(this.ratio).length > 0){
-        (this.zoom == false) ? 
-          this.shift(dx,dy):
-        undefined ;
-      }
+    // console.log(this.ratio);
+    if(Object.keys(param).length > 0){
+        if(this.ratio.end == true){
+          
+        }
+    }
     else{
       if (pos == 0) {
         this.x1 = dx;
