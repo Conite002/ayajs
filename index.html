@@ -62,10 +62,13 @@
                      r:  Math.floor(tail_px/3)
                   });
                   vie[i] = pt;
+                  // console.log(vie[i]);
                   i_nbre++;
                }
-               else
+               else{
                   vie[i] = 0;
+                  console.log(vie[i]);
+               }
             }
             else{
                vie[i] = 0;
@@ -102,12 +105,59 @@
 
 
       function generation(vie, tmp){
-         console.log("jeu de la vie");
+         var cpt=0, i, j, k, p;
+  
+         for(i = 0; i < nbLine; i++)
+            for(j = 0; j < nbCol; j++)
+               tmp[i*nbCol+j] = vie[i*nbCol+j];
+  
+          for(i = 0; i < nbLine; i++){
+            for(j = 0; j < nbCol; j++){
+               for(k = i-1; k < i+2; k++){
+                  if( k < 0 || k > 2 )
+                     continue;
+                  for(p = j-1; p < j+2; p++){
+                     if(p < 0 || p > 2 || (k==i && p==j))
+                        continue;
+                  if(vie[k*nbCol+p] != 0)
+                     cpt++;
+                  }
+               }
+               if(vie[i*nbCol+j] == 0 && cpt == 3){
+                  var pt = new aya.Component("circle", {
+                     x: box.form.x + ((Math.floor(i)) * tail_px) + Math.floor( tail_px/2), 
+                     y: box.form.y + (Math.floor((j)) * tail_px) + Math.floor( tail_px/2),
+                     r:  Math.floor(tail_px/3)
+                  });
+                  console.log("dans le if");
+                  console.log(pt);
+                  tmp[i*nbCol+j] = pt;
+               }
+               if(vie[i*nbCol+j] != 0 && cpt != 3 && cpt != 2)
+                  tmp[i*nbCol+j] = 0;
+               cpt = 0;
+            }
+
+            console.log(tmp);
+         }
+  
+  
+         for(i = 0; i < nbLine; i++)
+            for(j = 0; j < nbCol; j++)
+               vie[i*nbCol+j] = tmp[i*nbCol+j];
       }
 
+
+      console.log(vie);
+      console.log(tmp);
+
+
       function play(){
-         while(1)
+         var i = 0;
+         while(i < 50){
             generation(vie, tmp);
+            i++;
+         }
       }
       document.body.append(svg);
    </script>
