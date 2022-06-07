@@ -147,7 +147,7 @@
 
 	    this.c_svg.setAttribute("r", config.point.radius);
 
-	    // this.c_svg.setAttribute("class", "vertex");
+	    this.c_svg.setAttribute("class", "vertex");
 
 	    this.c_svg.setAttribute("id", this.uuid);
 	    this.c_svg.addEventListener("mousedown", events.mouseDownCb);
@@ -182,9 +182,7 @@
 	     * @param {number} y 
 	     * @param {number} dest_x 
 	     * @param {number} dest_y 
-	     * @param {array of object} children 
 	     */
-
 	    constructor(uuid, x=0, y=0, dest_x = x, dest_y = y){
 
 	        this.uuid = uuid;
@@ -269,7 +267,7 @@
 	    }
 
 
-	    draw(svgs){
+	    draw(svg){
 	        const ns = "http://www.w3.org/2000/svg";
 	        this.c_svg = document.createElementNS(ns,'path');
 
@@ -281,23 +279,20 @@
 	        this.c_svg.setAttribute("stroke", "indigo");
 	        this.c_svg.setAttributeNS(null, "stroke-width", "2px");
 
-	        svgs.appendChild(this.c_svg);
+	        svg.appendChild(this.c_svg);
 
 	        this.drawVertex();
 
 	        this.c_points.map((point) => {
-	            point.draw(svgs);
+	            point.draw(svg);
 	        });
 
 	          
 	        this.vertex.map( (vertex) => {
-	            vertex.draw(svgs);
+	            vertex.draw(svg);
 	        });
 
 	        this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
-	        this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
-	        this.events.add(this.c_svg, "mouseleave", events.mouseLeaveCb);
-
 	        this.events.create();
 	    }
 
@@ -1523,7 +1518,7 @@
 	    this.c_points[3].y = this.y + this.offsetY + (this.height/2 * this.scaleY);
 	  }
 
-	  draw(svgs) {
+	  draw(svg) {
 	    const ns = "http://www.w3.org/2000/svg";
 
 	    this.c_svg = document.createElementNS(ns, "path");
@@ -1543,12 +1538,11 @@
 	    this.c_svg.setAttributeNS(null, "stroke-width", "2px");
 	    this.c_svg.setAttribute("fill", "lavenderblush");
 
-	    svgs.appendChild(this.c_svg);
-	    svgs.appendChild(this.box);
+	    svg.appendChild(this.c_svg);
+	    svg.appendChild(this.box);
 	    
 	    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
 	    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
-	    this.events.add(this.c_svg, "mouseover", events.mouseOverCb);
 
 	    this.events.create();
 	  }
@@ -1572,7 +1566,6 @@
 	    }
 	    else
 	      this.p = `M ${this.x + this.offsetX} ${this.y + this.offsetY}  L ${this.x + this.offsetX + (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}  L ${this.x + this.offsetX} ${this.y + this.offsetY + (this.height * this.scaleY)}  L ${this.x + this.offsetX - (this.width/2 * this.scaleX)} ${this.y + this.offsetY + (this.height/2 * this.scaleY)}Z`;
-
 
 	    this.drawVertex();
 	    this.drawConnector();
@@ -1847,6 +1840,7 @@
 	exports.Triangle = Triangle;
 	exports._Register = _Register;
 	exports._uuid = _uuid;
+	exports.config = config;
 	exports.events = events;
 
 	Object.defineProperty(exports, '__esModule', { value: true });

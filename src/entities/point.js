@@ -37,7 +37,7 @@ class Point {
 
     this.c_svg.setAttribute("r", config.point.radius);
 
-    // this.c_svg.setAttribute("class", "vertex");
+    this.c_svg.setAttribute("class", "vertex");
 
     this.c_svg.setAttribute("id", this.uuid);
     this.c_svg.addEventListener("mousedown", events.mouseDownCb);
