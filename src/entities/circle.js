@@ -117,8 +117,8 @@ class Circle
      */
     
     draw(svg){
-        this.box = document.createElementNS(n, "path");
-        this.c_svg = document.createElementNS(n,"circle");
+        this.box = document.createElementNS(ns, "path");
+        this.c_svg = document.createElementNS(ns,"circle");
 
         this.c_svg.setAttribute("id", this.uuid);
 
