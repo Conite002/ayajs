@@ -75,7 +75,7 @@ class Rectangle {
     this.children.push({child, scale, rotate});
   }
 
-  draw(svgs) {
+  draw(svg) {
     const svgns = "http://www.w3.org/2000/svg";
     this.c_svg = document.createElementNS(svgns, "rect");
 
@@ -89,18 +89,18 @@ class Rectangle {
     this.c_svg.setAttributeNS(null, "fill", config.form.fill);
 
 
-    svgs.appendChild(this.c_svg);
+    svg.appendChild(this.c_svg);
 
 
     this.drawConnector();
     this.drawVertex();
 
     this.c_points.map((point) => {
-      point.draw(svgs);
+      point.draw(svg);
     });
 
     this.vertex.map((point) => {
-      point.draw(svgs);
+      point.draw(svg);
     });
 
     this.events.add(this.c_svg, "mousedown", events.mouseDownCb);

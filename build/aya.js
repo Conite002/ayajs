@@ -136,9 +136,7 @@
 	    _Register.add(this);
 	  }
 
-	  draw(svgs) {
-	    var ns = "http://www.w3.org/2000/svg";
-
+	  draw(svg) {
 	    this.c_svg = document.createElementNS(ns, "circle");
 
 	    this.c_svg.setAttribute("cx", this.x);
@@ -152,7 +150,7 @@
 	    this.c_svg.setAttribute("id", this.uuid);
 	    this.c_svg.addEventListener("mousedown", events.mouseDownCb);
 
-	    svgs.appendChild(this.c_svg);
+	    svg.appendChild(this.c_svg);
 
 	  }
 
@@ -268,7 +266,6 @@
 
 
 	    draw(svg){
-	        const ns = "http://www.w3.org/2000/svg";
 	        this.c_svg = document.createElementNS(ns,'path');
 
 	        var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
@@ -738,14 +735,12 @@
 	    
 	    /**
 	     * 
-	     * @param {DOMElement} svgs 
+	     * @param {DOMElement} svg 
 	     */
 	    
-	    draw(svgs){
-	        var ns="http://www.w3.org/2000/svg";
-
-	        this.box = document.createElementNS(ns, "path");
-	        this.c_svg = document.createElementNS(ns,"circle");
+	    draw(svg){
+	        this.box = document.createElementNS(n, "path");
+	        this.c_svg = document.createElementNS(n,"circle");
 
 	        this.c_svg.setAttribute("id", this.uuid);
 
@@ -767,23 +762,23 @@
 	        /** draw box */
 	        this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
 	        this.box.setAttributeNS(null, "stroke-width", "1px");
-	        this.box.setAttributeNS(null, "fill", "none");
+	        this.box.setAttributeNS(null, "fill", "black");
 	        this.box.setAttribute("stroke-dasharray", "4");
 
 	        
-	        svgs.appendChild(this.c_svg);
-	        svgs.appendChild(this.box);
+	        svg.appendChild(this.c_svg);
+	        svg.appendChild(this.box);
 
 	        this.drawVertex();
 	        this.drawConnector();
 	        this.drawBox();
 
 	        this.c_points.map((point) => {
-	            point.draw(svgs);
+	            point.draw(svg);
 	        });
 
 	        this.vertex.map((point) => {
-	            point.draw(svgs);
+	            point.draw(svg);
 	        });
 
 	        this.children.map( ({child, scale, rotate}) => {
@@ -795,6 +790,11 @@
 	        this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
 
 	        this.events.create();
+	    }
+
+	    remove(){
+	        svg.removeChild(this.box);
+	        svg.removeChild(this.c_svg);
 	    }
 
 	    shift(dx, dy){
@@ -978,7 +978,7 @@
 	    this.children.push({child, scale, rotate});
 	  }
 
-	  draw(svgs) {
+	  draw(svg) {
 	    const svgns = "http://www.w3.org/2000/svg";
 	    this.c_svg = document.createElementNS(svgns, "rect");
 
@@ -992,18 +992,18 @@
 	    this.c_svg.setAttributeNS(null, "fill", config.form.fill);
 
 
-	    svgs.appendChild(this.c_svg);
+	    svg.appendChild(this.c_svg);
 
 
 	    this.drawConnector();
 	    this.drawVertex();
 
 	    this.c_points.map((point) => {
-	      point.draw(svgs);
+	      point.draw(svg);
 	    });
 
 	    this.vertex.map((point) => {
-	      point.draw(svgs);
+	      point.draw(svg);
 	    });
 
 	    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
@@ -1320,9 +1320,7 @@
 	  }
 
 
-	  draw(svgs) {
-	      
-	    const ns = "http://www.w3.org/2000/svg";
+	  draw(svg) {
 	    this.c_svg = document.createElementNS(ns, "path");
 
 	    this.redraw();
@@ -1334,7 +1332,7 @@
 	    this.c_svg.setAttribute("fill", "lavenderblush");
 
 
-	    svgs.appendChild(this.c_svg);
+	    svg.appendChild(this.c_svg);
 
 	    this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
 	    this.events.add(this.c_svg, "mouseup", events.mouseUpCb);
@@ -1519,8 +1517,6 @@
 	  }
 
 	  draw(svg) {
-	    const ns = "http://www.w3.org/2000/svg";
-
 	    this.c_svg = document.createElementNS(ns, "path");
 	    this.box = document.createElementNS(ns, "path");
 

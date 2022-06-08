@@ -110,8 +110,6 @@ class Losange {
   }
 
   draw(svg) {
-    const ns = "http://www.w3.org/2000/svg";
-
     this.c_svg = document.createElementNS(ns, "path");
     this.box = document.createElementNS(ns, "path");
 

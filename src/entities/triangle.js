@@ -110,9 +110,7 @@ class Triangle {
   }
 
 
-  draw(svgs) {
-      
-    const ns = "http://www.w3.org/2000/svg";
+  draw(svg) {
     this.c_svg = document.createElementNS(ns, "path");
 
     this.redraw();
@@ -124,7 +122,7 @@ class Triangle {
     this.c_svg.setAttribute("fill", "lavenderblush");
 
 
-    svgs.appendChild(this.c_svg);
+    svg.appendChild(this.c_svg);
 
     this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
     this.events.add(this.c_svg, "mouseup", events.mouseUpCb);

@@ -26,9 +26,7 @@ class Point {
     _Register.add(this);
   }
 
-  draw(svgs) {
-    var ns = "http://www.w3.org/2000/svg";
-
+  draw(svg) {
     this.c_svg = document.createElementNS(ns, "circle");
 
     this.c_svg.setAttribute("cx", this.x);
@@ -42,7 +40,7 @@ class Point {
     this.c_svg.setAttribute("id", this.uuid);
     this.c_svg.addEventListener("mousedown", events.mouseDownCb);
 
-    svgs.appendChild(this.c_svg);
+    svg.appendChild(this.c_svg);
 
   }
 

@@ -113,14 +113,12 @@ class Circle
     
     /**
      * 
-     * @param {DOMElement} svgs 
+     * @param {DOMElement} svg 
      */
     
-    draw(svgs){
-        var ns="http://www.w3.org/2000/svg";
-
-        this.box = document.createElementNS(ns, "path");
-        this.c_svg = document.createElementNS(ns,"circle");
+    draw(svg){
+        this.box = document.createElementNS(n, "path");
+        this.c_svg = document.createElementNS(n,"circle");
 
         this.c_svg.setAttribute("id", this.uuid);
 
@@ -142,23 +140,23 @@ class Circle
         /** draw box */
         this.box.setAttributeNS(null, "stroke", "rgb(82, 170, 214)");
         this.box.setAttributeNS(null, "stroke-width", "1px");
-        this.box.setAttributeNS(null, "fill", "none");
+        this.box.setAttributeNS(null, "fill", "black");
         this.box.setAttribute("stroke-dasharray", "4");
 
         
-        svgs.appendChild(this.c_svg);
-        svgs.appendChild(this.box);
+        svg.appendChild(this.c_svg);
+        svg.appendChild(this.box);
 
         this.drawVertex();
         this.drawConnector();
         this.drawBox();
 
         this.c_points.map((point) => {
-            point.draw(svgs);
+            point.draw(svg);
         });
 
         this.vertex.map((point) => {
-            point.draw(svgs);
+            point.draw(svg);
         });
 
         this.children.map( ({child, scale, rotate}) => {
@@ -170,6 +168,11 @@ class Circle
         this.events.add(this.c_svg, "mousedown", events.mouseDownCb);
 
         this.events.create();
+    }
+
+    remove(){
+        svg.removeChild(this.box);
+        svg.removeChild(this.c_svg);
     }
 
     shift(dx, dy){

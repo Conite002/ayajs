@@ -106,7 +106,6 @@ class Line
 
 
     draw(svg){
-        const ns = "http://www.w3.org/2000/svg";
         this.c_svg = document.createElementNS(ns,'path');
 
         var p = "M "+  (this.x + this.offsetX) + ","+ (this.y + this.offsetY) + " " + ((this.dest_x + this.offsetX ) * this.scaleX)  + "," + ((this.dest_y + this.offsetY) * this.scaleY);
