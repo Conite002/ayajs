@@ -81,7 +81,25 @@
          // }
       }
 
+      function getSmallAngle(x_point, y_point, absciss, ordinate){
+         var cvx_absciss = [...absciss];
+         var cvx_ordinate = [...ordinate];
+         var cos_min = -1;
+         var indice = -5;
+         for(var i = 0; i < cvx_absciss.length; i++){
+            var scalar_product = (cvx_absciss[i] - x_point) * (cvx_absciss[i] - x_point);
+            var d_ab = Math.sqrt( Math.pow(  (cvx_absciss[i] - x_point),2) );
+            var d_ac = Math.sqrt( Math.pow( (cvx.absciss[i] - x_point), 2) + Math.pow( (cvx.ordinate[i] - y_point), 2) );
+            var cos_ab_ac = scalar_product / ( d_ab * d_ac);
+            if(cos_ab_ac > cos_min){
+               cos_min = cos_ab_ac;
+               indice = i;
+            }
+         }
+         return indice;
+      }
 
+      var cv = [];
       function envelop_convexe(){
          var cvx = [];
          for(var i = 0; i < nbr_point; i++){
@@ -92,8 +110,18 @@
                   var line = aya.createLine(abscisse[i], ordinate[i], abscisse[j], ordinate[j]);
                   line.draw();
                }
+               cvx.push({x: abscisse[i], y: ordinate[i]});
             }
-            console.log(cvx);
+            var indice = getSmallAngle(abscisse[i], ordinate[i], abscisse, ordinate);
+            cvx.push({x: abscisse[indice], y: ordinate[i]});
+         }
+
+         cv = [...cvx];
+      }
+
+      function draw_envelop_convexe(){
+         for(var i = 0; i < cv.length; cv++){
+            var line = aya.createLine()
          }
       }
 

@@ -62,7 +62,7 @@ class Application{
             var line = this.createLine(0, j * this.tail_px, this.nl * this.tail_px, j * this.tail_px);
 
             this.box.form.addChild(line, (p, c)=> {}, (p,c)=>{});
-
+            
             line.c_svg.setAttribute("fill", "#57564F");
             line.c_svg.setAttribute("stroke", "#57564F");
             line.c_svg.setAttributeNS(null, "stroke-width", "0.5pt");
