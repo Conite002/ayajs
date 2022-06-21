@@ -15,7 +15,7 @@ import { Arc } from "./entities/arc";
 
 
 class Application{
-    constructor(width = 1300, height = 1300){
+    constructor(width = 1340, height = 1340){
 
         this.uuid = _uuid.generate();
 
@@ -32,8 +32,8 @@ class Application{
         this.events = Events.setup(this.svg, this.uuid,this.config);
 
         this.tail_px = 50;
-        this.nc = this.svg_width / this.tail_px; 
-        this.nl = this.svg_height / this.tail_px;
+        this.nc = Math.floor(this.svg_width / this.tail_px) + 1; 
+        this.nl = Math.floor(this.svg_height / this.tail_px) + 1;
         
         this.box = this.createComponent("rectangle", {
             x: 0,
@@ -71,7 +71,11 @@ class Application{
                 child.removeFromDOM();
             });
 
-            line.vertex.map( (point) => {
+            line.vertex.map( (vt) => {
+                vt.removeFromDOM();
+            });
+
+            line.c_points.map( (point) => {
                 point.removeFromDOM();
             });
 
@@ -93,7 +97,11 @@ class Application{
             line.children.map( ({child}) => {
                 child.removeFromDOM();
             });
-            line.vertex.map( (point) => {
+            line.vertex.map( (vt) => {
+                vt.removeFromDOM();
+            });
+
+            line.c_points.map( (point) => {
                 point.removeFromDOM();
             });
 
@@ -123,7 +131,7 @@ class Application{
     }
 
     createCircle( x = 0, y = 0, r = 5){
-        return new Circle(_uuid.generate(), x, y, this.svg, this.events, this.config);
+        return new Circle(_uuid.generate(), x, y, r, this.svg, this.events, this.config);
     }
 
     createText(x = 0, y = 0, text = "text"){

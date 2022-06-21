@@ -16,22 +16,94 @@
       var aya = new aya.Application();
       console.log(aya);
 
-      var cp =  aya.createComponent("rectangle", {x: 100, y: 100, width: 300, height: 200});
+      var abscisse = [];
+      var ordinate = [];
+      nbr_point = 20;
 
 
-      var cp2 =  aya.createComponent("lozenge", {x: 200, y: 200, width: 300, height: 200});
+      function init(){
+         for(var i = 0; i < nbr_point; i++){
+               abscisse[i] = Math.floor(Math.random() * (500 - 1 + 1)) + 1;
+               ordinate[i] = Math.floor(Math.random() * (500 - 1 + 1)) + 1;
+         }
+      }
 
-      // var los = aya.createComponent("lozenge", {x: 500, y: 300, width: 200, height: 200});
+      var children = [];
+      function drawPoint(){
+         var child = [];
+         for(var i = 0; i < nbr_point; i++){
+            var pt = aya.createCircle(abscisse[i], ordinate[i], 3);
+            pt.draw();
 
-      var los = aya.createLozenge(0, 0, 50, 50);
+            child.push(pt);
+            pt.vertex.map((vt) => {
+               vt.removeFromDOM();
+            });
+            pt.c_points.map((c_p) => {
+               c_p.removeFromDOM();
+            });
+            pt.c_svg.setAttribute("fill","black");
+         }
 
-      cp.form.addChild(los, (p, c)=> {
-         c.setOffsetX(p.x + p.width/2);
-         c.setOffsetY(p.y + p.height/2)
-      }, (p, c)=>{
+         children = [...child];
+      }
 
-      });
+      function removePoint(){
+         children.map( (ch) => {
+            ch.removeFromDOM();
+         })
+      }
 
+      function getPivotAtIndexZero(){
+         var k, l;
+         for(var i = nbr_point; i >= 0; i--){
+            for(var j = 0; j < i; j++){
+               if( ordinate[j] < ordinate[j+1]){
+                  k = abscisse[j];
+                  l = ordinate[j];
+                  abscisse[j] = abscisse[j+1];
+                  ordinate[j] = ordinate[j+1];
+                  abscisse[j+1] = k;
+                  ordinate[j+1] = l;
+               }
+            }
+         }
+
+         // if(abscisse[0] == abscisse[1]){
+         //    if(ordinate[0] > ordinate[1]){
+         //       k = abscisse[0];
+         //       l = ordinate[0];
+         //       abscisse[0] = abscisse[1];
+         //       ordinate[0] = ordinate[1];
+         //       abscisse[1] = k;
+         //       ordinate[1] = l;
+         //    }
+         // }
+      }
+
+
+      function envelop_convexe(){
+         var cvx = [];
+         for(var i = 0; i < nbr_point; i++){
+            if(i == 0){
+               var line = aya.createLine(abscisse[i], ordinate[i], 1300, ordinate[i]);
+               line.draw();
+               for(var j = i+1; j< nbr_point; j++){
+                  var line = aya.createLine(abscisse[i], ordinate[i], abscisse[j], ordinate[j]);
+                  line.draw();
+               }
+            }
+            console.log(cvx);
+         }
+      }
+
+      init();
+      getPivotAtIndexZero();
+      drawPoint();
+      sortByAngle();
+      removePoint();
+      drawPoint()
+      envelop_convexe();
       document.body.append(aya.svg);
    </script>
 
