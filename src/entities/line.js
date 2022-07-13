@@ -268,12 +268,23 @@ class Line extends Form {
 
     calculateAngle(x,y, dest_x,dest_y){
 
-            var angle;
-            var pente = (dest_y - y) / (dest_x - x);
-            if(dest_x == x )
-                angle = -Math.PI/2; 
-            if(pente == 0) 
-                angle = 0;
+            // var angle;
+            // var pente = (dest_y - y) / (dest_x - x);
+            // if (dest_x <= x) {
+            //     angle = Math.PI/2; 
+
+            //     if(dest_y >= y){
+                    
+            //     }else{
+            //         angle = 0;
+            //     }
+            // }else{
+            //     //DEST_X >= X
+            //     if(dest_y <= y )
+            //         angle = 0; 
+            //     else 
+            //         angle = -Math.PI/2;
+            // }
 
             pente = (dest_y - y) / (dest_x - x);
             if(dest_x == x)
