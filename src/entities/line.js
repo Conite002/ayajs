@@ -93,7 +93,8 @@ class Line extends Form {
 
                 },  (p, c) => {
                     c.setRotateCenter(c.x2, c.y2);
-                    c.setRotateAngle(p.calculateAngle() - Math.PI);
+                    c.setRotateAngle(p.calculateAngle(this.x, this.y, this.c1.x, this.c1.y) - Math.PI);
+                    // c.setRotateAngle(p.calculateAngle() - Math.PI);
                 } );
             }
                 
@@ -131,7 +132,7 @@ class Line extends Form {
 
                 },  (p, c) => {
                     c.setRotateCenter(c.x2, c.y2);
-                    c.setRotateAngle(p.calculateAngle());
+                    c.setRotateAngle(p.calculateAngle(this.c4.x, this.c4.y, this.dest_x, this.dest_y));
                 } );
             }
             else {
@@ -265,60 +266,31 @@ class Line extends Form {
         });
     }
 
-    calculateAngle(){
-        var angle = 0;
-        if(this.type_line == "droit"){
-            this.pente = (this.dest_y - this.y) / (this.dest_x - this.x);
-            if(this.dest_x == this.x)
-                angle = -Math.PI/2;
-            if(this.pente == 0)
+    calculateAngle(x,y, dest_x,dest_y){
+
+            var angle;
+            var pente = (dest_y - y) / (dest_x - x);
+            if(dest_x == x )
+                angle = -Math.PI/2; 
+            if(pente == 0) 
                 angle = 0;
-            if( this.pente >= 0 && (this.x < this.dest_x && this.y < this.dest_y))
-                angle = Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.y - this.dest_y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-            else if(this.pente >= 0 && (this.x > this.dest_x && this.y > this.dest_y))
-                angle = Math.PI + Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-            else if( this.pente <= 0 && (this.x < this.dest_x && this.y > this.dest_y))
-                angle =  2 * Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
-            else if(this.pente <= 0 && (this.x > this.dest_x && this.y < this.dest_y))
-                angle =   Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.dest_y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.dest_x), 2) + Math.pow((this.y - this.dest_y), 2))) );
+
+            pente = (dest_y - y) / (dest_x - x);
+            if(dest_x == x)
+                angle = -Math.PI/2;
+            if(pente == 0)
+                angle = 0;
+            if( pente >= 0 && (x < dest_x && y < dest_y))
+                angle = Math.asin( (Math.sqrt( Math.pow((x - x), 2) + Math.pow((y - dest_y), 2)) ) / ( Math.sqrt( Math.pow((x - dest_x), 2) + Math.pow((y - dest_y), 2))) );
+            else if(pente >= 0 && (x > dest_x && y > dest_y))
+                angle = Math.PI + Math.asin( (Math.sqrt( Math.pow((x - x), 2) + Math.pow((dest_y - y), 2)) ) / ( Math.sqrt( Math.pow((x - dest_x), 2) + Math.pow((y - dest_y), 2))) );
+            else if( pente <= 0 && (x < dest_x && y > dest_y))
+                angle =  2 * Math.PI -  Math.asin( (Math.sqrt( Math.pow((x - x), 2) + Math.pow((dest_y - y), 2)) ) / ( Math.sqrt( Math.pow((x - dest_x), 2) + Math.pow((y - dest_y), 2))) );
+            else if(pente <= 0 && (x > dest_x && y < dest_y))
+                angle =   Math.PI -  Math.asin( (Math.sqrt( Math.pow((x - x), 2) + Math.pow((dest_y - y), 2)) ) / ( Math.sqrt( Math.pow((x - dest_x), 2) + Math.pow((y - dest_y), 2))) );
     
             return angle;
-        }
-        else{
-            this.start_pente = (this.c1.y - this.y) / (this.c1.x - this.x);
-            this.ends_pente = (this.c4.y - this.dest_y) / (this.c4.x - this.dest_x);
-            var s_angle = 0, d_angle = 0;
 
-            if(this.c1.x == this.x)
-                s_angle = -Math.PI/2;
-            if(this.start_pente == 0)
-                s_angle = 0;
-            if( this.start_pente >= 0 && (this.x < this.c1.x && this.y < this.c1.y))
-                s_angle = Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.y - this.c1.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.c1.x), 2) + Math.pow((this.y - this.c1.y), 2))) );
-            else if(this.start_pente >= 0 && (this.x > this.c1.x && this.y > this.c1.y))
-                s_angle = Math.PI + Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.c1.y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.c1.x), 2) + Math.pow((this.y - this.c1.y), 2))) );
-            else if( this.start_pente <= 0 && (this.x < this.c1.x && this.y > this.c1.y))
-                s_angle =  2 * Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.c1.y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.c1.x), 2) + Math.pow((this.y - this.c1.y), 2))) );
-            else if(this.start_pente <= 0 && (this.x > this.c1.x && this.y < this.c1.y))
-                s_angle =   Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.x - this.x), 2) + Math.pow((this.c1.y - this.y), 2)) ) / ( Math.sqrt( Math.pow((this.x - this.c1.x), 2) + Math.pow((this.y - this.c1.y), 2))) );
-
-
-            if(this.c4.x == this.dest_x)
-                d_angle = -Math.PI/2;
-            if(this.start_pente == 0)
-                d_angle = 0;
-            if( this.start_pente >= 0 && (this.c4.x < this.dest_x && this.c4.y < this.dest_y))
-                d_angle = Math.asin( (Math.sqrt( Math.pow((this.c4.x - this.c4.x), 2) + Math.pow((this.c4.y - this.dest_y), 2)) ) / ( Math.sqrt( Math.pow((this.c4.x - this.dest_x), 2) + Math.pow((this.c4.y - this.dest_y), 2))) );
-            else if(this.start_pente >= 0 && (this.c4.x > this.dest_x && this.c4.y > this.dest_y))
-                d_angle = Math.PI + Math.asin( (Math.sqrt( Math.pow((this.c4.x - this.c4.x), 2) + Math.pow((this.dest_y - this.c4.y), 2)) ) / ( Math.sqrt( Math.pow((this.c4.x - this.dest_x), 2) + Math.pow((this.c4.y - this.dest_y), 2))) );
-            else if( this.start_pente <= 0 && (this.c4.x < this.dest_x && this.c4.y > this.dest_y))
-                d_angle =  2 * Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.c4.x - this.c4.x), 2) + Math.pow((this.dest_y - this.c4.y), 2)) ) / ( Math.sqrt( Math.pow((this.c4.x - this.dest_x), 2) + Math.pow((this.c4.y - this.dest_y), 2))) );
-            else if(this.start_pente <= 0 && (this.c4.x > this.dest_x && this.c4.y < this.dest_y))
-                d_angle =   Math.PI -  Math.asin( (Math.sqrt( Math.pow((this.c4.x - this.c4.x), 2) + Math.pow((this.dest_y - this.c4.y), 2)) ) / ( Math.sqrt( Math.pow((this.c4.x - this.dest_x), 2) + Math.pow((this.c4.y - this.dest_y), 2))) );
-
-            console.log(s_angle + " " + d_angle);
-            return {start : s_angle, ends : d_angle};
-        }
     }
 
     resize(pos, dx, dy){
